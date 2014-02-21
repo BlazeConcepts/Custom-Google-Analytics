@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Custom Google Analytics by BlazeConcepts</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Custom Google Analytics</h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/BlazeConcepts/Custom-Google-Analytics">View the Project on GitHub <small>BlazeConcepts/Custom-Google-Analytics</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/BlazeConcepts/Custom-Google-Analytics/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/BlazeConcepts/Custom-Google-Analytics/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/BlazeConcepts/Custom-Google-Analytics">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="custom-google-analytics" class="anchor" href="#custom-google-analytics"><span class="octicon octicon-link"></span></a>Custom Google Analytics</h1>
+
+<p>Apply custom google analytic tracking to specified elements.</p>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>Track navigation links (<code>&lt;a&gt;</code>) identified by a class name of <code>ga-navigation</code></p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">Google</span><span class="p">.</span><span class="nx">track</span><span class="p">(</span><span class="s1">'ga-navigation'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="c1">// this function has the context of the html element, making it's attributes easily accessible!</span>
+    <span class="nx">ga</span><span class="p">(</span><span class="s1">'send'</span><span class="p">,</span> <span class="s1">'event'</span><span class="p">,</span> <span class="s1">'link'</span><span class="p">,</span> <span class="s1">'click'</span><span class="p">,</span> <span class="p">{</span> <span class="s1">'page'</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">href</span> <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Track form submissions, (<code>&lt;form&gt;</code>) identified by a class of <code>ga-form</code></p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">Google</span><span class="p">.</span><span class="nx">track</span><span class="p">(</span><span class="s1">'ga-form'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span> 
+    <span class="nx">ga</span><span class="p">(</span><span class="s1">'send'</span><span class="p">,</span> <span class="s1">'event'</span><span class="p">,</span> <span class="s1">'form'</span><span class="p">,</span> <span class="s1">'submit'</span><span class="p">,</span> <span class="p">{</span> <span class="s1">'page'</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">action</span> <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Note that CustomGoogleAnalytics attaches eventHandlers to DOM elements, therefore the DOM needs to be loaded before applying any custom analytics.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">Google</span><span class="p">.</span><span class="nx">track</span><span class="p">(</span><span class="s1">'ga-navigation'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="c1">// this function has the context of the html element, making it's attributes easily accessible!</span>
+        <span class="nx">ga</span><span class="p">(</span><span class="s1">'send'</span><span class="p">,</span> <span class="s1">'event'</span><span class="p">,</span> <span class="s1">'link'</span><span class="p">,</span> <span class="s1">'click'</span><span class="p">,</span> <span class="p">{</span> <span class="s1">'page'</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">href</span> <span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="nx">Google</span><span class="p">.</span><span class="nx">track</span><span class="p">(</span><span class="s1">'ga-form'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span> 
+        <span class="nx">ga</span><span class="p">(</span><span class="s1">'send'</span><span class="p">,</span> <span class="s1">'event'</span><span class="p">,</span> <span class="s1">'form'</span><span class="p">,</span> <span class="s1">'submit'</span><span class="p">,</span> <span class="p">{</span> <span class="s1">'page'</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">action</span> <span class="p">});</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>CustomGoogleAnalytics can also accept an array of elements in the track method.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">Google</span><span class="p">.</span><span class="nx">track</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">'ga-navigation'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ga</span><span class="p">(</span><span class="s1">'send'</span><span class="p">,</span> <span class="s1">'event'</span><span class="p">,</span> <span class="s1">'link'</span><span class="p">,</span> <span class="s1">'click'</span><span class="p">,</span> <span class="p">{</span> <span class="s1">'page'</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">href</span> <span class="p">});</span>
+    <span class="p">}],</span>
+
+    <span class="p">[</span><span class="s1">'ga-form'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">ga</span><span class="p">(</span><span class="s1">'send'</span><span class="p">,</span> <span class="s1">'event'</span><span class="p">,</span> <span class="s1">'form'</span><span class="p">,</span> <span class="s1">'submit'</span><span class="p">,</span> <span class="p">{</span> <span class="s1">'page'</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">action</span> <span class="p">});</span>
+    <span class="p">}]</span>
+<span class="p">]);</span>
+</pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/BlazeConcepts">BlazeConcepts</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
