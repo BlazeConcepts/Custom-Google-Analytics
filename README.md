@@ -3,17 +3,16 @@ Custom Google Analytics
 
 Apply custom google analytic tracking to specified elements.
 
-Does not require jQuery.
 
 
 Examples
 ---------
 
-Track navigation links (`<a>`) identitfied by a class name of `ga-navigation`
+Track navigation links (`<a>`) identified by a class name of `ga-navigation`
 
 ```javascript
 Google.track('ga-navigation', function(){
-	// this function has the context of the html element, making its attributes easily accessible!
+	// this function has the context of the html element, making it's attributes easily accessible!
 	ga('send', 'event', 'link', 'click', { 'page': this.href });
 });
 ```
@@ -26,12 +25,12 @@ Google.track('ga-form', function(){
 });
 ```
 
-Note that CustomGoogleAnalytics attaches eventHandlers to DOM element, therefore the DOM needs to be loaded before applying any custom analytics.
+Note that CustomGoogleAnalytics attaches eventHandlers to DOM elements, therefore the DOM needs to be loaded before applying any custom analytics.
 
 ```javascript
 window.onload = function() {
 	Google.track('ga-navigation', function(){
-		// this function has the context of the html element, making its attributes easily accessible!
+		// this function has the context of the html element, making it's attributes easily accessible!
 		ga('send', 'event', 'link', 'click', { 'page': this.href });
 	});
 
