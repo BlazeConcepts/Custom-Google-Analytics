@@ -2,21 +2,19 @@ var CustomGoogleAnalytics = (function()
 {
     "use strict";
 
-
     function CustomGoogleAnalytics () 
     {
         this.options = {};
         this.options.elementType = {
             'A': {
-                event: 'onclick',
-                func: function(){ window.open(this.href, (!this.target ? "_self" : this.target)); }
+                event: 'click',
+                func: function(){ return true; /*window.open(this.href, (!this.target ? "_self" : this.target));*/ }
             },
             'FORM': {
-                event: 'onsubmit',
+                event: 'submit',
                 func: function(){ this.submit(); }
             }
         };
-
     }
 
 
@@ -35,7 +33,7 @@ var CustomGoogleAnalytics = (function()
                 break;
 
             default:
-                console.warn('Invalid argument for Google.track');
+                this.log('Invalid argument for Google.track');
         }
     }
 
@@ -52,16 +50,18 @@ var CustomGoogleAnalytics = (function()
         while (i--) {
             var tag = elements[i].tagName;
 
-            elements[i][cgaElements[tag].event] = function (event) {
-                event.preventDefault();
+            this.addEvent(elements[i], cgaElements[tag].event, function (event) {
 
                 _ga.call(this);
+                this.log(_ga.toString());
 
                 setTimeout(cgaElements[tag].func.apply(this), 300);
-            }
+
+                return true;
+            });
         }
 
-        console.info('Tracking ' + _class);
+        this.log('Tracking ' + _class);
     }
 
 
@@ -70,7 +70,7 @@ var CustomGoogleAnalytics = (function()
         var objectType = Object.prototype.toString.call(events);
 
         if (objectType !== '[object Array]') {
-            console.warn('Invalid events argument. Array expected, ' + objectType + ' given.');
+            this.log('Invalid events argument. Array expected, ' + objectType + ' given.');
             
             return false;
         }
@@ -97,6 +97,26 @@ var CustomGoogleAnalytics = (function()
         }
 
         return elements;
+    }
+
+
+    CustomGoogleAnalytics.prototype.addEvent = function (element, event, fn)
+    {
+        if (element.attachEvent) {
+            return element.attachEvent('on'+event, fn);
+        } else {
+            return element.addEventListener(event, fn, false);
+        }
+    }
+
+
+    CustomGoogleAnalytics.prototype.log = function(message)
+    {
+        if (window.console && console.log) {
+            console.log(message);
+        }
+
+        return false;
     }
 
     return CustomGoogleAnalytics;
