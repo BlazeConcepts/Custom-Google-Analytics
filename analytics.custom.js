@@ -121,4 +121,4 @@ var CustomGoogleAnalytics = (function()
     return CustomGoogleAnalytics;
 })();
 
-window.Google = new CustomGoogleAnalytics();
+window.Google = new CustomGoogleAnalytics
