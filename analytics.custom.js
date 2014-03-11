@@ -1,18 +1,21 @@
-var CustomGoogleAnalytics = (function()
+var CustomGoogleAnalytics = (function ()
 {
     "use strict";
 
-    function CustomGoogleAnalytics () 
+    function CustomGoogleAnalytics() 
     {
         this.options = {};
         this.options.elements = {
             'A': {
                 event: 'click',
-                func: function(){ return true; /*window.open(this.href, (!this.target ? "_self" : this.target));*/ }
+                func: function (){
+                    //window.open(this.href, (!this.target ? "_self" : this.target)); 
+                    return true;
+                }
             },
             'FORM': {
                 event: 'submit',
-                func: function(){ this.submit(); }
+                func: function (){ this.submit(); }
             }
         };
     }
@@ -42,9 +45,8 @@ var CustomGoogleAnalytics = (function()
         var _ga = typeof _ga === 'function' ? _ga : function(){};
 
         var cgaElements = this.options.elements;
-
-        var elements = this.getByClass(_class), 
-            i = elements.length;
+        var elements = this.getByClass(_class); 
+        var i = elements.length;
 
         while (i--) {
             var tag = elements[i].tagName;
@@ -109,7 +111,7 @@ var CustomGoogleAnalytics = (function()
     }
 
 
-    CustomGoogleAnalytics.prototype.log = function(message)
+    CustomGoogleAnalytics.prototype.log = function (message)
     {
         if (window.console && console.log) {
             console.log(message);
