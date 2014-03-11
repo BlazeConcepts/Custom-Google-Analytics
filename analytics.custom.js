@@ -5,7 +5,7 @@ var CustomGoogleAnalytics = (function()
     function CustomGoogleAnalytics () 
     {
         this.options = {};
-        this.options.elementType = {
+        this.options.elements = {
             'A': {
                 event: 'click',
                 func: function(){ return true; /*window.open(this.href, (!this.target ? "_self" : this.target));*/ }
@@ -41,8 +41,7 @@ var CustomGoogleAnalytics = (function()
     CustomGoogleAnalytics.prototype.trackEvent = function (_class, _ga) {
         var _ga = typeof _ga === 'function' ? _ga : function(){};
 
-        var cgaScope = this;
-        var cgaElements = cgaScope.options.elementType;
+        var cgaElements = this.options.elements;
 
         var elements = this.getByClass(_class), 
             i = elements.length;
