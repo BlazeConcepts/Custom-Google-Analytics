@@ -11,6 +11,7 @@ window.EPRESSPACK = window.EPRESSPACK || {};
 EPRESSPACK.Analytics = (function(){
 
 	EPRESSPACK.Analytics = function(){
+		this.log('EPRESSPACK.Analtics');
 		// enable console logging
 		this.debug = true;
 
@@ -23,10 +24,12 @@ EPRESSPACK.Analytics = (function(){
 
 		this.init();
 
-		if (window.location.hash !== '') {
-			var hash = window.location.hash.replace('#','');
+		if (window.location.hash) {
+			var hash = window.location.hash.substring(1);
 
-			console.log(hash);
+			if (hash === 'show-analytics') {
+				this.displayFeatures();
+			}
 		}
 	};
 
@@ -49,33 +52,17 @@ EPRESSPACK.Analytics = (function(){
 					}
 					
 					var category = 'Clippings';
-					var action = 'Clip | ' + asset.type;
-					var label = asset.title;
 
-					ga('send', 'event', category, action, label);
-
-					return true;
-				}
-			},
-			unclip: {
-				on: 'click',
-				fn: function() {	
-					var i;
-					var asset;
-					var id = this.href.split('/').slice(-1); // last element in the url (image id)
-
-					for (i in EPRESSPACK.assets) {
-						if (EPRESSPACK.assets[i].id == id) {
-							asset = EPRESSPACK.assets[i];
-							break;
-						}
+					if (EPRESSPACK.Analytics.hasClass(this, 'btn-unclip')) {
+						var action = 'Unclip | ' + asset.type;
+					} else {
+						var action = 'Clip | ' + asset.type;
 					}
 					
-					var category = 'Clippings';
-					var action = 'Unclip | ' + asset.type;
 					var label = asset.title;
 
-					ga('send', 'event', category, action, label);
+					alert('ga(\'send\', \'event\', \'' + category + '\', \'' + action + '\', \'' + label + '\')');
+					//ga('send', 'event', category, action, label);
 
 					return true;
 				}
@@ -217,6 +204,38 @@ EPRESSPACK.Analytics = (function(){
 	};
 
 
+	EPRESSPACK.Analytics.prototype.displayFeatures = function()
+	{
+		var style = document.createElement('style');
+			style.type = 'text/css';
+			style.innerHTML = 'table.analytics-table { position:fixed; top:100px; right:50px;background: #FFF; border: 1px solid lightblue; } table.analytics-table thead th { padding: 5px; border:1px solid lightblue } table.analytics-table tbody td { padding: 0 5px; border:1px solid lightblue}';
+		
+		document.getElementsByTagName('head')[0].appendChild(style);
+
+
+		var i = 0;
+		
+		var html = '<table class="analytics-table">';
+			html += '<thead><tr><th>epress-feature</th><th>epress-feature-event</th></tr></thead>';
+			html += '<tbody>';
+
+		for (feature in this.features) {
+			for (var event in this.features[feature]) {
+				html += '<tr>';
+				html += '<td>'+feature+'</td><td>'+event+'</td>';
+				html += '</tr>';
+			}
+		}
+
+		html += '<tr><td colspan="2"><a href="' + window.location.origin + window.location.pathname + '">close</a></td></tr>';
+		html += '</tbody></table>';
+
+		console.log(window.location);
+
+		document.write(html);
+	}
+
+
 	EPRESSPACK.Analytics.prototype.addEvent = function (element, event, fn)
 	{
 		if (element.attachEvent) {
@@ -244,6 +263,11 @@ EPRESSPACK.Analytics = (function(){
 	};
 
 
+	EPRESSPACK.Analytics.prototype.hasClass = function (element, className) {
+    	return element.className && new RegExp("(^|\\s)" + className + "(\\s|$)").test(element.className);
+	};
+
+
 	EPRESSPACK.Analytics.prototype.log = function (message)
 	{
 		if (window.console && console.log) {
@@ -255,6 +279,3 @@ EPRESSPACK.Analytics = (function(){
 
 	return new EPRESSPACK.Analytics();
 })();
-
-
-var ga = function(){};
