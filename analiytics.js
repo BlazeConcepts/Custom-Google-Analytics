@@ -198,13 +198,13 @@ EPRESSPACK.Analytics = (function(){
 
 
 	EPRESSPACK.Analytics.prototype.addEvent = function (element, event, fn)
-    {
-        if (element.attachEvent) {
-            return element.attachEvent('on'+event, fn);
-        } else {
-            return element.addEventListener(event, fn, false);
-        }
-    };
+	{
+		if (element.attachEvent) {
+			return element.attachEvent('on'+event, fn);
+		} else {
+			return element.addEventListener(event, fn, false);
+		}
+	};
 
 
 	EPRESSPACK.Analytics.prototype.getElementsWithAttribute = function (attribute) 
@@ -225,13 +225,13 @@ EPRESSPACK.Analytics = (function(){
 
 
 	EPRESSPACK.Analytics.prototype.log = function (message)
-    {
-        if (window.console && console.log) {
-            console.log(message);
-        }
+	{
+		if (window.console && console.log) {
+			console.log(message);
+		}
 
-        return false;
-    };
+		return false;
+	};
 
 	return new EPRESSPACK.Analytics();
 })();
