@@ -264,7 +264,7 @@ EPRESSPACK.Analytics = (function(){
 
 
 	EPRESSPACK.Analytics.prototype.hasClass = function (element, className) {
-    	return element.className && new RegExp("(^|\\s)" + className + "(\\s|$)").test(element.className);
+		return element.className && new RegExp("(^|\\s)" + className + "(\\s|$)").test(element.className);
 	};
 
 
