@@ -1,11 +1,7 @@
-/**
- * EPRESSPACK.Common
- * -------
- * A part of the SDM EPRESSPACK library
+/** 
  *
- * @author Ian Brindley
  */
- 
+
 window.EPRESSPACK = window.EPRESSPACK || {};
 
 EPRESSPACK.Analytics = (function(){
@@ -93,7 +89,24 @@ EPRESSPACK.Analytics = (function(){
 			'download-link': {
 				on: 'click',
 				fn: function(){
-					alert('download link');
+					var i;
+					var asset;
+					var id = this.href.split('/').slice(-1).split('.')[0]; // last element in the url (image id)
+
+					for (i in EPRESSPACK.assets) {
+						if (EPRESSPACK.assets[i].id == id) {
+							asset = EPRESSPACK.assets[i];
+							break;
+						}
+					}
+					
+					var category = 'Clippings Download';
+					var action = 'Download via link | ' + asset.type;
+					var label = asset.title;
+
+					ga('send', 'event', category, action, label);
+
+					return true;
 				}
 			}
 		},
@@ -103,7 +116,13 @@ EPRESSPACK.Analytics = (function(){
 			open: {
 				on: 'click',
 				fn: function(){
-					alert('open hotspot');
+					var category = 'Content Interaction';
+					var action = 'Hotspot open';
+					var label = this.getAttribute('data-title');
+
+					ga('send', 'event', category, action, label);
+
+					return true;
 				}
 			}
 		},
