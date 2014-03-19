@@ -1,5 +1,9 @@
-/** 
+/**
+ * EPRESSPACK.Toolsbar
+ * -------
+ * A part of the SDM EPRESSPACK library
  *
+ * @author Ian Brindley
  */
 
 window.EPRESSPACK = window.EPRESSPACK || {};
@@ -7,7 +11,15 @@ window.EPRESSPACK = window.EPRESSPACK || {};
 EPRESSPACK.Analytics = (function(){
 
 	EPRESSPACK.Analytics = function(){
+		// enable console logging
 		this.debug = true;
+
+		this.config = {
+			dataAttributes: {
+				feature: 'epress-feature',
+				event: 'epress-feature-event'
+			}
+		};
 
 		this.init();
 	};
@@ -145,15 +157,15 @@ EPRESSPACK.Analytics = (function(){
 
 	EPRESSPACK.Analytics.prototype.init = function() 
 	{
-		var elements = this.getElementsWithAttribute('epress-feature');
+		var elements = this.getElementsWithAttribute(this.config.dataAttributes.feature);
 		var i = elements.length;
 
 
 		while (i--) {
 			
 			var element = elements[i];
-			var feature = element.getAttribute('epress-feature');
-			var event = element.getAttribute('epress-feature-event');
+			var feature = element.getAttribute(this.config.dataAttributes.feature);
+			var event = element.getAttribute(this.config.dataAttributes.event);
 
 			// is the epress feature defined in this.features?
 			if (typeof this.features[feature] !== 'object') {
@@ -186,8 +198,8 @@ EPRESSPACK.Analytics = (function(){
 
 			// add the event listener to apply the analytics function
 			this.addEvent(element, this.features[feature][event].on, function(){
-				var feature = this.getAttribute('epress-feature');
-				var event = this.getAttribute('epress-feature-event');
+				var feature = this.getAttribute(EPRESSPACK.Analytics.config.dataAttributes.feature);
+				var event = this.getAttribute(EPRESSPACK.Analytics.config.dataAttributes.event);
 
 				EPRESSPACK.Analytics.features[feature][event].fn.call(this);
 
