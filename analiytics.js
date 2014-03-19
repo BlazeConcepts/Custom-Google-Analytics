@@ -22,13 +22,18 @@ EPRESSPACK.Analytics = (function(){
 		};
 
 		this.init();
+
+		if (window.location.hash !== '') {
+			var hash = window.location.hash.replace('#','');
+
+			console.log(hash);
+		}
 	};
 
 	EPRESSPACK.Analytics.prototype.features = {
 		clippings: 
 		{
 			clip: {
-				name: 'clip',
 				on: 'click',
 				fn: function() {
 
@@ -120,6 +125,9 @@ EPRESSPACK.Analytics = (function(){
 
 					return true;
 				}
+			},
+			'email-links': {
+
 			}
 		},
 
