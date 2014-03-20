@@ -116,8 +116,17 @@ EPRESSPACK.Analytics = (function(){
 					return true;
 				}
 			},
-			'email-links': {
+			email: {
+				on: 'click',
+				fn: function(){
+					var category = 'Clippings';
+					var action = 'Email links';
+					var label = 'Email links button';
 
+					EPRESSPACK.Analytics.send(category, action, label);
+
+					return true;
+				}
 			}
 		},
 
@@ -214,7 +223,6 @@ EPRESSPACK.Analytics = (function(){
 		var elements = this.getElementsWithAttribute(this.config.dataAttributes.feature);
 		var i = elements.length;
 
-
 		while (i--) {
 			
 			var element = elements[i];
@@ -287,20 +295,20 @@ EPRESSPACK.Analytics = (function(){
 
 		var i = 0;
 		
-		var html = '<table class="analytics-table">';
-			html += '<thead><tr><th>epress-feature</th><th>epress-feature-event</th></tr></thead>';
+		var html = '<table class="analytics-table" id="epat">';
+			html += '<thead><tr><th>epress-feature</th></tr></thead>';
 			html += '<tbody>';
 
 		var feature;
 		for (feature in this.features) {
 			for (var event in this.features[feature]) {
 				html += '<tr>';
-				html += '<td>'+feature+'</td><td>'+event+'</td>';
+				html += '<td>'+feature+':'+event+'</td>';
 				html += '</tr>';
 			}
 		}
 
-		html += '<tr><td colspan="2"><a href="' + window.location.origin + window.location.pathname + '">close</a></td></tr>';
+		html += '<tr><td><a href="#" onclick="document.getElementById(\'epat\').style = \'display:none\'; return false;">close</a></td></tr>';
 		html += '</tbody></table>';
 
 		console.log(window.location);
