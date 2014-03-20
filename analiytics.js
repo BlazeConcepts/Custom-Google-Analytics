@@ -17,8 +17,7 @@ EPRESSPACK.Analytics = (function(){
 
 		this.config = {
 			dataAttributes: {
-				feature: 'epress-feature',
-				event: 'epress-feature-event'
+				feature: 'epress-feature'
 			}
 		};
 
@@ -52,17 +51,17 @@ EPRESSPACK.Analytics = (function(){
 					}
 					
 					var category = 'Clippings';
+					var action;
 
 					if (EPRESSPACK.Analytics.hasClass(this, 'btn-unclip')) {
-						var action = 'Unclip | ' + asset.type;
+						action = 'Unclip | ' + asset.type;
 					} else {
-						var action = 'Clip | ' + asset.type;
+						action = 'Clip | ' + asset.type;
 					}
 					
 					var label = asset.title;
 
-					alert('ga(\'send\', \'event\', \'' + category + '\', \'' + action + '\', \'' + label + '\')');
-					//ga('send', 'event', category, action, label);
+					EPRESSPACK.Analytics.send(category, action, label);
 
 					return true;
 				}
@@ -72,7 +71,11 @@ EPRESSPACK.Analytics = (function(){
 				fn: function() {
 					var i;
 					var asset;
-					var id = this.href.split('/').slice(-1).split('.')[0]; // last element in the url (image id)
+					var id = this.href.split('/').slice(-1);
+						// slice return an array object, we need a string
+						id = new String(id);
+						// last element in the url (image id)
+						id = id.split('.')[0];
 
 					for (i in EPRESSPACK.assets) {
 						if (EPRESSPACK.assets[i].id == id) {
@@ -85,7 +88,7 @@ EPRESSPACK.Analytics = (function(){
 					var action = 'Download via button | ' + asset.type;
 					var label = asset.title;
 
-					ga('send', 'event', category, action, label);
+					EPRESSPACK.Analytics.send(category, action, label);
 
 					return true;
 				}
@@ -95,7 +98,7 @@ EPRESSPACK.Analytics = (function(){
 				fn: function(){
 					var i;
 					var asset;
-					var id = this.href.split('/').slice(-1).split('.')[0]; // last element in the url (image id)
+					var id = this.href.split('/').slice(-1); // last element in the url (image id)
 
 					for (i in EPRESSPACK.assets) {
 						if (EPRESSPACK.assets[i].id == id) {
@@ -108,7 +111,7 @@ EPRESSPACK.Analytics = (function(){
 					var action = 'Download via link | ' + asset.type;
 					var label = asset.title;
 
-					ga('send', 'event', category, action, label);
+					EPRESSPACK.Analytics.send(category, action, label);
 
 					return true;
 				}
@@ -127,7 +130,7 @@ EPRESSPACK.Analytics = (function(){
 					var action = 'Hotspot open';
 					var label = this.getAttribute('data-title');
 
-					ga('send', 'event', category, action, label);
+					EPRESSPACK.Analytics.send(category, action, label);
 
 					return true;
 				}
@@ -139,14 +142,70 @@ EPRESSPACK.Analytics = (function(){
 			'read-more': {
 				on: 'click',
 				fn: function(){
-					//ga()
+					var category = 'Content Interaction';
+					var action = 'Read more';
+					var label = '';
+
+
+					EPRESSPACK.Analytics.send(category, action, label);
+
+					return true;
 				}
 			}
 		},
 
 		navigation: 
 		{
-			
+			main: {
+				on: 'click',
+				fn: function(){
+					var category = 'Navigation';
+					var action = 'Top Nav Click';
+					var label = (this.getAttribute('title') || '');
+
+					EPRESSPACK.Analytics.send(category, action, label);
+
+					return true;
+				}
+			},
+			'search-result': {
+				on: 'click',
+				fn: function(){
+					var category = 'Navigation';
+					var action = 'Search Result Click';
+					var label = (this.getAttribute('title') || '') + ' | ' + (this.getAttribute('data-search-pos') || 'unknown');
+
+					EPRESSPACK.Analytics.send(category, action, label);
+
+					return true;
+				}
+			}
+		},
+
+		gallery: {
+			'download-link': {
+				on: 'click',
+				fn: function(){
+					var i;
+					var asset;
+					var id = this.href.split('/').slice(-1); // last element in the url (image id)
+
+					for (i in EPRESSPACK.assets) {
+						if (EPRESSPACK.assets[i].id == id) {
+							asset = EPRESSPACK.assets[i];
+							break;
+						}
+					}
+					
+					var category = 'Content Interaction';
+					var action = asset.type + ' Dwnld ' + (this.getAttribute('data-track-meta') || '');
+					var label = asset.title;
+
+					EPRESSPACK.Analytics.send(category, action, label);
+
+					return true;
+				}
+			},
 		}
 	};
 
@@ -159,13 +218,14 @@ EPRESSPACK.Analytics = (function(){
 		while (i--) {
 			
 			var element = elements[i];
-			var feature = element.getAttribute(this.config.dataAttributes.feature);
-			var event = element.getAttribute(this.config.dataAttributes.event);
+			var dataAttribute = element.getAttribute(this.config.dataAttributes.feature).split(':');
+			var feature = dataAttribute[0];
+			var event = dataAttribute[1];
 
 			// is the epress feature defined in this.features?
 			if (typeof this.features[feature] !== 'object') {
 				if (this.debug) {
-					this.log('could not find element with data attribute `epress-feature` "' + feature + '"');
+					alert('could not find element with data attribute `epress-feature` "' + feature + '"');
 				}
 
 				continue;
@@ -174,7 +234,7 @@ EPRESSPACK.Analytics = (function(){
 			// is the feature event defined?
 			if (typeof this.features[feature][event] !== 'object') {
 				if (this.debug) {
-					this.log('`epress-feature` "' + feature + '" found. Even "' + event + '" not found!');
+					alert('`epress-feature` "' + feature + '" found. Even "' + event + '" not found!');
 				}
 
 				continue;
@@ -184,17 +244,17 @@ EPRESSPACK.Analytics = (function(){
 			// is there an analytics function?
 			if (typeof this.features[feature][event].fn !== 'function') {
 				if (this.debug) {
-					this.log('analyics function `fn` not found for `epress-feature` ' + feature + '.' + event);
+					alert('analyics function `fn` not found for `epress-feature` ' + feature + '.' + event);
 				}
 
 				continue;
 			}
 
-
 			// add the event listener to apply the analytics function
 			this.addEvent(element, this.features[feature][event].on, function(){
-				var feature = this.getAttribute(EPRESSPACK.Analytics.config.dataAttributes.feature);
-				var event = this.getAttribute(EPRESSPACK.Analytics.config.dataAttributes.event);
+				var dataAttribute = this.getAttribute(EPRESSPACK.Analytics.config.dataAttributes.feature).split(':');
+				var feature = dataAttribute[0];
+				var event = dataAttribute[1];
 
 				EPRESSPACK.Analytics.features[feature][event].fn.call(this);
 
@@ -204,12 +264,24 @@ EPRESSPACK.Analytics = (function(){
 	};
 
 
+	EPRESSPACK.Analytics.prototype.send = function (category, action, label)
+	{
+		if (EPRESSPACK.Analytics.debug) {
+			alert('ga(\'send\', \'event\', \'' + category + '\', \'' + action + '\', \'' + label + '\')');
+		} else {
+			ga('send', 'event', category, action, label);
+		}
+
+		return false;
+	};
+
+
 	EPRESSPACK.Analytics.prototype.displayFeatures = function()
 	{
 		var style = document.createElement('style');
 			style.type = 'text/css';
-			style.innerHTML = 'table.analytics-table { position:fixed; top:100px; right:50px;background: #FFF; border: 1px solid lightblue; } table.analytics-table thead th { padding: 5px; border:1px solid lightblue } table.analytics-table tbody td { padding: 0 5px; border:1px solid lightblue}';
-		
+			style.innerHTML = 'table.analytics-table { z-index: 9898989898; position:fixed; top:100px; right:50px;background: #FFF; border: 1px solid lightblue; } table.analytics-table thead th { padding: 5px; border:1px solid lightblue } table.analytics-table tbody td { padding: 0 5px; border:1px solid lightblue}';
+
 		document.getElementsByTagName('head')[0].appendChild(style);
 
 
@@ -219,6 +291,7 @@ EPRESSPACK.Analytics = (function(){
 			html += '<thead><tr><th>epress-feature</th><th>epress-feature-event</th></tr></thead>';
 			html += '<tbody>';
 
+		var feature;
 		for (feature in this.features) {
 			for (var event in this.features[feature]) {
 				html += '<tr>';
@@ -233,7 +306,7 @@ EPRESSPACK.Analytics = (function(){
 		console.log(window.location);
 
 		document.write(html);
-	}
+	};
 
 
 	EPRESSPACK.Analytics.prototype.addEvent = function (element, event, fn)
@@ -254,7 +327,6 @@ EPRESSPACK.Analytics = (function(){
 
 		while (i--) {
 			if (allElements[i].getAttribute(attribute)) {
-				// Element exists with attribute. Add to array.
 				matchingElements.push(allElements[i]);
 			}
 		}
